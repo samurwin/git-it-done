@@ -1,5 +1,18 @@
 var issueContainerEl = document.querySelector("#issues-container");
 var limitWarningEl = document.querySelector("#limit-warning");
+var repoNameEl = document.querySelector("#repo-name");
+
+var getRepoName = function() {
+    var queryString = document.location.search;
+    var repoName = queryString.split("=")[1];
+
+    if (repoName) {
+        getRepoIssues(repoName);
+        repoNameEl.textContent = repoName;
+    } else {
+        document.location.replace("./index.html");
+    }
+};
 
 var getRepoIssues = function(repo) {
     var apiurl = "https://api.github.com/repos/" + repo + "/issues?direction=asc";
@@ -15,7 +28,8 @@ var getRepoIssues = function(repo) {
                 }
             })
         } else {
-            alert("There was a problem with your request!");
+            // if not successful, redirect to homepage
+            document.location.replace("./index.html");
         }
     });
 };
@@ -25,6 +39,7 @@ var displayIssues = function(issues) {
         issueContainerEl.textContent = "This repo has no issues!";
         return;
     }
+    console.log(issues);
 
     for (var i = 0; i < issues.length; i++) {
         // create a link element to take users to the issue on github
@@ -70,4 +85,4 @@ var displayWarning = function(repo) {
     limitWarningEl.appendChild(linkEl);
 };
 
-getRepoIssues("microsoft/terminal");
+getRepoName();
